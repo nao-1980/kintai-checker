@@ -1,370 +1,389 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Name | Link in bio</title>
-  <meta name="description" content="リンク集ページ" />
-  <meta name="robots" content="noindex, nofollow" />
-  <!-- OGP（SNSシェア用） -->
-  <meta property="og:title" content="Your Name" />
-  <meta property="og:description" content="ここに一言紹介が入ります。" />
-  <meta property="og:type" content="website" />
-  <link rel="icon" href="assets/avatar.svg" />
-  <style>
-    :root {
-      --bg: #f7f8fa;
-      --card: #ffffff;
-      --text: #1a1a1a;        /* カード内の文字色（カードは白なので濃色固定） */
-      --page-text: #1a1a1a;   /* 名前・一言・フッターの文字色（背景に応じて変更） */
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-      --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.08);
-      --accent: #6d5efc;        /* アクセントカラー（テーマで変更） */
-      --radius: 14px;           /* ボタンの角丸（テーマで変更） */
-      --avatar-radius: 50%;     /* アイコンの形（テーマで変更） */
-      --font: system-ui, -apple-system, "Hiragino Kaku Gothic ProN",
-        "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
-    }
-    /* フォントの選択肢（theme.font で指定） */
-    [data-font="rounded"] {
-      --font: "Hiragino Maru Gothic ProN", "Quicksand", "Rounded Mplus 1c",
-        system-ui, sans-serif;
-    }
-    [data-font="serif"] {
-      --font: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", Georgia, serif;
-    }
-    [data-font="mono"] {
-      --font: "SF Mono", "Menlo", "Consolas", "Courier New", monospace;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; }
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      color: var(--text);
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      padding: 48px 20px;
-    }
-    /* 画像背景のときに文字を読みやすくする半透明レイヤー（任意） */
-    #overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      display: none;
-    }
-    .container {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .avatar {
-      width: 120px;
-      height: 120px;
-      border-radius: var(--avatar-radius);
-      object-fit: cover;
-      border: 3px solid var(--card);
-      box-shadow: var(--shadow-hover);
-      background: #e9ebef;
-    }
-    .name {
-      margin-top: 20px;
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      text-align: center;
-      color: var(--page-text);
-    }
-    .bio {
-      margin-top: 8px;
-      color: var(--page-text);
-      opacity: 0.72;
-      font-size: 0.95rem;
-      text-align: center;
-      max-width: 360px;
-      white-space: pre-line; /* 改行（\n）をそのまま表示 */
-    }
-    .links {
-      margin-top: 32px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .link {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      width: 100%;
-      padding: 16px 20px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.98rem;
-      font-weight: 600;
-      box-shadow: var(--shadow);
-      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease,
-        background 0.15s ease;
-    }
-    .link:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--accent);
-    }
-    .link:active { transform: translateY(0); }
-    .link svg { width: 22px; height: 22px; flex-shrink: 0; }
-    .link span { flex: 1; }
-    .link .chev { color: var(--muted); width: 16px; height: 16px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>勤怠PDFチェッカー</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="HRMOSの日次勤怠PDFから打刻の押し忘れや休憩の不足を見つけるツール。PDFは端末内だけで処理されます。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F9FB; --surface:#FFFFFF; --ink:#1C2638; --sub:#5E6A7D; --line:#DCE2EA;
+  --fix:#D6453D; --fix-bg:#FDECEA; --chk:#B77900; --chk-bg:#FFF4D9;
+  --ok:#1E8C7E; --ok-bg:#E4F4F1; --hol:#5B4BC4; --hol-bg:#ECE9FB;
+  --off:#8A95A5; --off-bg:#EEF1F5; --fur:#2F77B8; --fur-bg:#E5F0FA;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121822; --surface:#1B2330; --ink:#E8EDF4; --sub:#9AA6B8; --line:#2C3747;
+    --fix:#FF7A70; --fix-bg:#3A2224; --chk:#F2BE4A; --chk-bg:#372E17;
+    --ok:#4FC4B3; --ok-bg:#18322F; --hol:#A99CFF; --hol-bg:#29264A;
+    --off:#8793A4; --off-bg:#222B38; --fur:#6FB0EE; --fur-bg:#1C2E42;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121822; --surface:#1B2330; --ink:#E8EDF4; --sub:#9AA6B8; --line:#2C3747;
+  --fix:#FF7A70; --fix-bg:#3A2224; --chk:#F2BE4A; --chk-bg:#372E17;
+  --ok:#4FC4B3; --ok-bg:#18322F; --hol:#A99CFF; --hol-bg:#29264A;
+  --off:#8793A4; --off-bg:#222B38; --fur:#6FB0EE; --fur-bg:#1C2E42;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:28px 18px 56px}
+h1{font-size:clamp(1.6rem,6vw,2.2rem);font-weight:900;line-height:1.25;margin:0 0 6px}
+.lead{margin:0;color:var(--sub);font-size:.95rem}
+h2{font-size:1.15rem;font-weight:900;margin:34px 0 12px}
 
-    /* ボタンスタイル（theme.buttonStyle で指定） */
-    /* outline … 背景透明＋アクセント枠線 */
-    [data-btn="outline"] .link {
-      background: transparent;
-      border: 2px solid var(--accent);
-      color: var(--page-text);
-      box-shadow: none;
-    }
-    [data-btn="outline"] .link .chev,
-    [data-btn="outline"] .link svg { color: var(--page-text); }
-    [data-btn="outline"] .link:hover { background: rgba(255, 255, 255, 0.12); }
+.drop{margin-top:22px;display:block;border:2px dashed var(--line);border-radius:18px;background:var(--surface);
+  padding:30px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--ok);background:var(--ok-bg)}
+.drop:focus-within{outline:3px solid var(--ink);outline-offset:2px}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+.drop .big{font-size:1.1rem;font-weight:900;display:block}
+.drop .small{font-size:.85rem;color:var(--sub);display:block;margin-top:4px}
+.btn{display:inline-block;margin-top:14px;background:var(--ink);color:var(--bg);font-weight:700;border-radius:999px;padding:10px 22px;font-size:.95rem}
+.privacy{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:.85rem;color:var(--sub)}
+.privacy b{color:var(--ok)}
+.status{margin-top:14px;font-size:.92rem;font-weight:700}
+.status.err{color:var(--fix);background:var(--fix-bg);padding:12px 14px;border-radius:12px}
 
-    /* solid … アクセント色で塗りつぶし＋白文字 */
-    [data-btn="solid"] .link {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #ffffff;
-    }
-    [data-btn="solid"] .link .chev,
-    [data-btn="solid"] .link svg { color: #ffffff; }
-    [data-btn="solid"] .link:hover { filter: brightness(1.06); }
+#result[hidden]{display:none}
+.who{margin-top:30px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.who .p{font-size:1.25rem;font-weight:900}
+.who .m{color:var(--sub);font-size:.9rem}
+.verdict{margin:16px 0 0;display:flex;gap:10px;flex-wrap:wrap}
+.pill{display:flex;align-items:baseline;gap:6px;padding:10px 14px;border-radius:14px;font-weight:700}
+.pill b{font-size:1.6rem;font-weight:900;line-height:1}
+.pill.fix{background:var(--fix-bg);color:var(--fix)}
+.pill.chk{background:var(--chk-bg);color:var(--chk)}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}
+.allok{margin-top:14px;font-weight:700;color:var(--ok)}
 
-    /* glass … 半透明＋すりガラス（写真背景と相性良） */
-    [data-btn="glass"] .link {
-      background: rgba(255, 255, 255, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      color: var(--page-text);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-      box-shadow: none;
-    }
-    [data-btn="glass"] .link .chev,
-    [data-btn="glass"] .link svg { color: var(--page-text); }
-    .gallery {
-      width: 100%;
-      margin-top: 24px;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-    .gallery:empty { display: none; }
-    .gallery img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      border-radius: 14px;
-      display: block;
-      box-shadow: var(--shadow);
-    }
-    .music {
-      width: 100%;
-      margin-top: 24px;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .music:empty { display: none; }
-    .music iframe { display: block; width: 100%; border: 0; }
-    footer { margin-top: 40px; color: var(--page-text); opacity: 0.6; font-size: 0.8rem; }
-  </style>
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px}
+.dow,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.dow div{text-align:center;font-size:.75rem;color:var(--sub);padding:2px 0 6px}
+.dow div:first-child{color:var(--fix)} .dow div:last-child{color:var(--fur)}
+.day{appearance:none;border:0;font:inherit;color:inherit;cursor:pointer;min-height:84px;border-radius:10px;
+  padding:6px 3px 7px;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;min-width:0;text-align:center}
+.day .n{font-weight:900;font-size:1rem;line-height:1.1}
+.day .n small{font-size:.6rem;font-weight:700}
+.day .k{font-size:.62rem;font-weight:700;line-height:1.15;word-break:keep-all}
+.day .iss{font-size:.58rem;font-weight:900;line-height:1.2;padding:2px 4px;border-radius:5px;background:var(--surface);word-break:keep-all;max-width:100%}
+.day.blank{visibility:hidden;min-height:0}
+.s-fix{background:var(--fix-bg);color:var(--fix);box-shadow:inset 0 0 0 2px var(--fix)}
+.s-chk{background:var(--chk-bg);color:var(--chk);box-shadow:inset 0 0 0 2px var(--chk)}
+.s-ok{background:var(--ok-bg);color:var(--ok)}
+.s-off{background:var(--off-bg);color:var(--off)}
+.s-fur{background:var(--fur-bg);color:var(--fur)}
+.s-today{background:var(--surface);color:var(--sub);box-shadow:inset 0 0 0 2px var(--line)}
+.day .hol{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--hol)}
+.day[aria-pressed="true"],.day:focus-visible{outline:3px solid var(--ink);outline-offset:1px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:.78rem;color:var(--sub)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
+.detail{margin-top:12px;border-radius:14px;padding:14px 16px;background:var(--bg);border:1px solid var(--line);min-height:64px}
+.detail .dt{font-weight:900;font-size:1.02rem;margin-bottom:4px}
+.detail dl{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;font-size:.9rem;margin:0}
+.detail dt{color:var(--sub)} .detail dd{margin:0;font-weight:500}
+.detail ul{margin:8px 0 0;padding-left:1.2em;font-weight:700;font-size:.92rem}
+.hint{color:var(--sub);font-size:.9rem}
+
+.todo{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.group+.group{border-top:1px solid var(--line)}
+.gh{display:flex;align-items:center;gap:10px;padding:14px 16px 4px}
+.tag{font-size:.72rem;font-weight:900;padding:3px 9px;border-radius:999px;color:#fff;flex:none}
+.tag.fix{background:var(--fix)} .tag.chk{background:var(--chk)} .tag.info{background:var(--off)}
+.gh h3{margin:0;font-size:1rem;font-weight:900}
+.why{font-size:.82rem;color:var(--sub);padding:0 16px 4px}
+.item{display:flex;gap:12px;padding:8px 16px;font-size:.92rem}
+.item .d{font-weight:900;min-width:5em;flex:none}
+.item small{display:block;color:var(--sub);font-size:.8rem}
+.group{padding-bottom:8px}
+
+.rules{font-size:.86rem;color:var(--sub);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px 16px}
+.rules summary{cursor:pointer;font-weight:700;color:var(--ink);padding:10px 0}
+.rules ul{margin:0 0 12px;padding-left:1.2em}
+footer{margin-top:28px;font-size:.78rem;color:var(--sub)}
+@media (max-width:420px){.cal{padding:9px}.dow,.grid{gap:4px}.day{min-height:78px;padding:5px 1px 6px}
+  .day .iss{font-size:.52rem;padding:1px 2px}.day .k{font-size:.56rem}.day .n{font-size:.92rem}}
+@media (prefers-reduced-motion:reduce){.drop{transition:none}}
+</style>
 </head>
 <body>
-  <div id="overlay"></div>
-  <main class="container">
-    <img class="avatar" id="avatar" alt="プロフィール画像" />
-    <h1 class="name" id="name"></h1>
-    <p class="bio" id="bio"></p>
-    <nav class="links" id="links"></nav>
-    <div class="gallery" id="gallery"></div>
-    <div class="music" id="music"></div>
-    <footer id="footer"></footer>
-  </main>
+<div class="wrap">
+  <h1>勤怠PDFチェッカー</h1>
+  <p class="lead">HRMOSの「日次勤怠」PDFを入れると、打刻の押し忘れや休憩の不足を見つけます。</p>
 
-  <!-- ============================================================ -->
-  <!-- ▼▼▼ ここだけ編集すればOK（カスタマイズ設定） ▼▼▼            -->
-  <!-- ============================================================ -->
-  <script>
-    const CONFIG = {
-  "name": "Ur Name",
-  "bio": "ここに一言紹介が入ります。あなたの活動やテーマを短く書きましょう。",
-  "avatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23e0e7ff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23f5d0fe%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23g)%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2296%22%20r%3D%2244%22%20fill%3D%22%23ffffff%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M40%20220c0-44%2036-72%2080-72s80%2028%2080%2072z%22%20fill%3D%22%23ffffff%22%20opacity%3D%220.9%22%2F%3E%3C%2Fsvg%3E",
-  "background": "#f7f8fa",
-  "textColor": "#1a1a1a",
-  "overlay": "",
-  "theme": {
-    "accent": "#6d5efc",
-    "font": "sans",
-    "buttonStyle": "card",
-    "buttonRadius": 14,
-    "avatarShape": "circle"
-  },
-  "links": [
-    {
-      "icon": "x",
-      "label": "X (Twitter)",
-      "url": "https://x.com/yourname"
-    },
-    {
-      "icon": "instagram",
-      "label": "Instagram",
-      "url": "https://instagram.com/yourname"
-    },
-    {
-      "icon": "email",
-      "label": "メール",
-      "url": "mailto:your@email.com"
-    }
-  ],
-  "music": "",
-  "gallery": [],
-  "footer": "Ur Name"
-};
-  </script>
-  <!-- ============================================================ -->
-  <!-- ▲▲▲ 編集はここまで。以下は触らなくてOK ▲▲▲                  -->
-  <!-- ============================================================ -->
+  <label class="drop" id="drop">
+    <input type="file" id="file" accept="application/pdf,.pdf">
+    <span class="big">PDFをここにドロップ</span>
+    <span class="small">スマホは下のボタンから「ファイル」を選んでください</span>
+    <span class="btn">PDFを選ぶ</span>
+  </label>
+  <div class="privacy"><span>🔒</span><span><b>PDFはこの端末の中だけで読み取ります。</b>どこにも送信・保存されないので、同僚と共有しても他の人に見られることはありません。</span></div>
+  <div class="status" id="status" role="status" aria-live="polite"></div>
 
-  <script>
-    // 使えるアイコン一覧（icon: の値で指定）。未対応の名前は "website" にフォールバック。
-    const ICONS = {
-      x: '<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>',
-      instagram: '<path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.43-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.62c-3.15 0-3.52.01-4.76.07-1.15.05-1.77.24-2.19.41-.55.21-.94.47-1.35.88-.41.41-.67.8-.88 1.35-.17.42-.36 1.04-.41 2.19-.06 1.24-.07 1.61-.07 4.76s.01 3.52.07 4.76c.05 1.15.24 1.77.41 2.19.21.55.47.94.88 1.35.41.41.8.67 1.35.88.42.17 1.04.36 2.19.41 1.24.06 1.61.07 4.76.07s3.52-.01 4.76-.07c1.15-.05 1.77-.24 2.19-.41.55-.21.94-.47 1.35-.88.41-.41.67-.8.88-1.35.17-.42.36-1.04.41-2.19.06-1.24.07-1.61.07-4.76s-.01-3.52-.07-4.76c-.05-1.15-.24-1.77-.41-2.19-.21-.55-.47-.94-.88-1.35-.41-.41-.8-.67-1.35-.88-.42-.17-1.04-.36-2.19-.41-1.24-.06-1.61-.07-4.76-.07zm0 2.76a5.46 5.46 0 110 10.92 5.46 5.46 0 010-10.92zm0 9a3.54 3.54 0 100-7.08 3.54 3.54 0 000 7.08zm6.95-9.22a1.27 1.27 0 11-2.55 0 1.27 1.27 0 012.55 0z"/>',
-      youtube: '<path d="M23.5 6.2a3.02 3.02 0 00-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.51A3.02 3.02 0 00.5 6.2C0 8.08 0 12 0 12s0 3.92.5 5.8a3.02 3.02 0 002.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.02 3.02 0 002.12-2.14C24 15.92 24 12 24 12s0-3.92-.5-5.8zM9.6 15.57V8.43L15.82 12 9.6 15.57z"/>',
-      tiktok: '<path d="M16.6 5.82a4.28 4.28 0 01-1.06-2.82h-3.3v13.4a2.59 2.59 0 01-2.59 2.5 2.59 2.59 0 01-2.59-2.59 2.59 2.59 0 012.59-2.59c.27 0 .53.04.78.12V10.5a5.9 5.9 0 00-.78-.05A5.94 5.94 0 003.7 16.4a5.94 5.94 0 005.94 5.94 5.94 5.94 0 005.94-5.94V9.01a7.57 7.57 0 004.42 1.42V7.13a4.28 4.28 0 01-3.4-1.31z"/>',
-      email: '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></g>',
-      website: '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></g>',
-      line: '<path d="M12 2C6.48 2 2 5.69 2 10.23c0 4.06 3.55 7.46 8.35 8.1.32.07.77.21.88.49.1.25.07.64.03.9l-.14.85c-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75c1.43-1.57 2.24-3.17 2.24-5.12C22 5.69 17.52 2 12 2zM8.07 12.62H6.1a.52.52 0 0 1-.52-.52V8.18a.52.52 0 1 1 1.04 0v3.4h1.45a.52.52 0 1 1 0 1.04zm2.04-.52a.52.52 0 1 1-1.04 0V8.18a.52.52 0 1 1 1.04 0v3.92zm4.7 0a.52.52 0 0 1-.36.5.5.5 0 0 1-.16.02.52.52 0 0 1-.42-.21l-2.01-2.74v2.43a.52.52 0 1 1-1.04 0V8.18a.52.52 0 0 1 .93-.31l2.02 2.74V8.18a.52.52 0 1 1 1.04 0v3.92zm3.3-2.49a.52.52 0 1 1 0 1.04h-1.45v.93h1.45a.52.52 0 1 1 0 1.04h-1.97a.52.52 0 0 1-.52-.52V8.18a.52.52 0 0 1 .52-.52h1.97a.52.52 0 1 1 0 1.04h-1.45v.91h1.45z"/>',
-      facebook: '<path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6.02 4.39 11.01 10.13 11.93v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.08 24 18.09 24 12.07z"/>',
-      github: '<path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6.01 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 24 12.5C24 5.87 18.63.5 12 .5z"/>',
-      note: '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></g>',
-      threads: '<path d="M17.6 11.2c-.1 0-.2-.1-.3-.1-.2-3-1.8-4.7-4.5-4.7-1.6 0-3 .7-3.8 1.9l1.5 1c.6-.9 1.5-1.1 2.3-1.1 1 0 1.8.3 2.2.9.3.4.5 1 .6 1.7-.7-.1-1.4-.2-2.2-.1-2.3.1-3.8 1.5-3.7 3.3.1 1.8 1.6 2.8 3.4 2.7 1.4-.1 2.4-.7 3.1-1.7.5-.7.8-1.6.9-2.7.7.4 1.2 1 1.5 1.7.5 1.1.5 3-1 4.5-1.3 1.3-2.9 1.9-5 1.9-2.4 0-4.2-.8-5.3-2.3C6.1 16.5 5.6 14.6 5.5 12c0-2.6.4-4.5 1.5-6 1.1-1.5 2.9-2.3 5.3-2.3 2.4 0 4.2.8 5.4 2.3.6.8 1 1.7 1.3 2.9l1.8-.5c-.3-1.4-.9-2.6-1.7-3.6C18.2 1 15.9 0 12.8 0h-.1C9.5 0 7.2 1 5.7 2.8 4.3 4.6 3.7 7 3.6 11.9v.2c.1 4.9.7 7.3 2.1 9.1C7.2 23 9.5 24 12.7 24h.1c2.7 0 4.7-.7 6.3-2.3 2.1-2.1 2-4.7 1.3-6.3-.5-1.1-1.5-2-2.8-2.6zm-4.6 4c-1 .1-2-.4-2.1-1.2-.1-.6.4-1.3 1.9-1.4h.6c.6 0 1.1 0 1.6.1-.2 1.7-1 2.4-2 2.5z"/>',
-    };
+  <section id="result" hidden>
+    <div class="who"><div class="p" id="who"></div><div class="m" id="period"></div>
+      <div class="verdict" id="verdict"></div><div id="allok"></div></div>
 
-    function iconSvg(name) {
-      const body = ICONS[name] || ICONS.website;
-      const fill = body.startsWith("<g") ? 'fill="none"' : 'fill="currentColor"';
-      return '<svg viewBox="0 0 24 24" ' + fill + ' aria-hidden="true">' + body + "</svg>";
-    }
+    <h2>カレンダー</h2>
+    <div class="cal">
+      <div class="dow"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div>
+      <div class="grid" id="grid"></div>
+      <div class="legend">
+        <span><i style="background:var(--fix)"></i>直す</span>
+        <span><i style="background:var(--chk)"></i>確認する</span>
+        <span><i style="background:var(--ok)"></i>問題なし</span>
+        <span><i style="background:var(--fur)"></i>振休・有休など</span>
+        <span><i style="background:var(--off)"></i>公休</span>
+        <span><i style="background:var(--hol);border-radius:50%"></i>土日祝</span>
+      </div>
+      <div class="detail" id="detail"><div class="hint">日付をタップすると、打刻の内容と気になる点が表示されます。</div></div>
+    </div>
 
-    const chev = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
+    <h2>見つかったこと</h2>
+    <div class="todo" id="list"></div>
 
-    // 好きな曲：各サービスのURLを埋め込みプレイヤーに変換
-    function musicEmbed(url) {
-      if (!url) return "";
-      url = String(url).trim();
-      var src = "", height = 152;
-      if (/open\.spotify\.com/.test(url)) {
-        var m = url.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(track|album|playlist|episode|show|artist)\/([A-Za-z0-9]+)/);
-        if (m) { src = "https://open.spotify.com/embed/" + m[1] + "/" + m[2]; height = m[1] === "track" ? 152 : 352; }
-      } else if (/youtube\.com|youtu\.be/.test(url)) {
-        var y = url.match(/[?&]v=([A-Za-z0-9_-]{11})/) || url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/) || url.match(/embed\/([A-Za-z0-9_-]{11})/);
-        if (y) { src = "https://www.youtube.com/embed/" + y[1]; height = 200; }
-      } else if (/music\.apple\.com/.test(url)) {
-        src = url.replace("music.apple.com", "embed.music.apple.com"); height = 175;
-      } else if (/soundcloud\.com/.test(url)) {
-        src = "https://w.soundcloud.com/player/?url=" + encodeURIComponent(url) + "&color=%236d5efc&visual=false"; height = 166;
+    <h2>チェックの基準</h2>
+    <details class="rules">
+      <summary>どんな基準で判定しているか</summary>
+      <ul>
+        <li>勤務日なのに出勤・退勤の打刻がない日は「直す」</li>
+        <li>休憩は法律の最低ライン：働いた時間が6時間を超えたら45分、8時間を超えたら60分。休憩0分なら押し忘れとして「直す」、足りなければ「確認する」</li>
+        <li>休憩が2時間以上の日は、休憩終了の押し忘れの可能性として「直す」</li>
+        <li>退勤が出勤より前になっている日は「直す」</li>
+        <li>休みの日に打刻がある日、土日祝なのに通常の出勤区分（またはその逆）、半日区分なのに6時間を超えて働いている日は「確認する」</li>
+        <li>今日の日付で退勤がまだの日は、エラーにしません</li>
+      </ul>
+    </details>
+  </section>
+  <footer>HRMOS勤怠の「日次勤怠」PDF（1人分）に対応しています。判定は目安です。最終的な扱いは職場のルールで確認してください。<br>制作：NAYA WORKS</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script>
+/* ===== 祝日（2026〜2027） ===== */
+const HOLIDAYS=new Set(["2026-01-01","2026-01-12","2026-02-11","2026-02-23","2026-03-20","2026-04-29","2026-05-03","2026-05-04","2026-05-05","2026-05-06","2026-07-20","2026-08-11","2026-09-21","2026-09-22","2026-09-23","2026-10-12","2026-11-03","2026-11-23",
+"2027-01-01","2027-01-11","2027-02-11","2027-02-23","2027-03-21","2027-03-22","2027-04-29","2027-05-03","2027-05-04","2027-05-05","2027-07-19","2027-08-11","2027-09-20","2027-09-23","2027-10-11","2027-11-03","2027-11-23"]);
+const WK="日月火水木金土";
+const OFF_EXACT=["公休","振休","有休","夏季休暇","慶弔休暇","特別休暇","代休","欠勤","休職","年末年始休暇","養育両立支援休暇"];
+const RULE={longBreak:120};
+
+const $=id=>document.getElementById(id);
+const status=(t,err)=>{const s=$("status");s.textContent=t;s.className="status"+(err?" err":"")};
+const toMin=s=>{const m=/^(\d{1,2}):(\d{2})$/.exec(s||"");return m?(+m[1])*60+(+m[2]):null};
+const fmt=m=>Math.floor(m/60)+":"+String(m%60).padStart(2,"0");
+const pad=n=>String(n).padStart(2,"0");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ===== PDF読み取り ===== */
+if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";}
+
+async function readPdf(buf){
+  const doc=await pdfjsLib.getDocument({data:buf,isEvalSupported:false}).promise;
+  const pages=[];
+  for(let i=1;i<=doc.numPages;i++){
+    const pg=await doc.getPage(i);const tc=await pg.getTextContent();
+    pages.push(tc.items.filter(t=>t.str&&t.str.trim()).map(t=>({s:t.str.trim(),x:t.transform[4],y:t.transform[5],w:t.width||0,cx:t.transform[4]+(t.width||0)/2})));
+  }
+  return pages;
+}
+
+const COLS=[["date","日付"],["kind","勤務区分"],["site","打刻拠点"],["in","出勤時刻"],["out","退勤時刻"],["brk","休憩時間"],["late","遅刻"],["early","早退"]];
+
+function parsePage(items,meta){
+  const hdr={};
+  const d0=items.find(t=>t.s==="日付");if(!d0)return [];
+  for(const [k,label] of COLS){const h=items.find(t=>t.s===label&&Math.abs(t.y-d0.y)<6);if(h)hdr[k]=h;}
+  if(!hdr.kind||!hdr.in||!hdr.out||!hdr.brk)return [];
+  const hy=hdr.date.y;
+  const memoH=items.find(t=>t.s==="備考"&&Math.abs(t.y-hy)<6);
+  const visitH=items.find(t=>t.s==="往診"&&Math.abs(t.y-hy)<6);
+  const centers=COLS.filter(([k])=>hdr[k]).map(([k])=>({k,c:hdr[k].cx}));
+  const earlyRight=hdr.early?hdr.early.cx+40:Infinity;
+  const memoLeft=visitH?visitH.x+visitH.w+2:(memoH?memoH.x-60:Infinity);
+  const colOf=cx=>{
+    if(cx>=memoLeft)return "memo";
+    if(cx>earlyRight)return null;
+    let best=null,bd=1e9;for(const c of centers){const d=Math.abs(cx-c.c);if(d<bd){bd=d;best=c.k}}return best;
+  };
+  // 日付行を検出
+  const dateRows=items.filter(t=>t.y<hy-3&&/^\d{1,2}$/.test(t.s)&&Math.abs(t.cx-hdr.date.cx)<30&&t.x<hdr.kind.x)
+    .sort((a,b)=>b.y-a.y);
+  const endY=(items.find(t=>t.s==="合計"&&t.y<hy)||{y:-1e9}).y;
+  const rows=dateRows.filter(r=>r.y>endY+2).map(r=>({y:r.y,day:+r.s,cells:{}}));
+  if(!rows.length)return [];
+  for(const t of items){
+    if(t.y>=hy-3||t.y<=endY+2)continue;
+    let best=null,bd=1e9;for(const r of rows){const d=Math.abs(t.y-r.y);if(d<bd){bd=d;best=r}}
+    if(!best||bd>9)continue;
+    const col=colOf(t.cx);if(!col)continue;
+    (best.cells[col]=best.cells[col]||[]).push(t);
+  }
+  return rows.map(r=>{
+    const get=k=>(r.cells[k]||[]).sort((a,b)=>(b.y-a.y)||(a.x-b.x)).map(t=>t.s).join("");
+    const dateStr=get("date");
+    return {day:r.day,kind:get("kind"),site:get("site"),in:get("in"),out:get("out"),brk:get("brk"),late:get("late"),early:get("early"),memo:get("memo")};
+  });
+}
+
+function parseMeta(pages){
+  const all=pages.flat();
+  const txt=all.map(t=>t.s).join("");
+  const m=/(\d{4})年(\d{1,2})月度[（(](\d{1,2})\/(\d{1,2})[〜~～-](\d{1,2})\/(\d{1,2})[）)]/.exec(txt);
+  let name="";
+  const nh=all.find(t=>t.s==="氏名");
+  if(nh){const cand=all.filter(t=>t.y<nh.y-3&&t.y>nh.y-40&&Math.abs(t.cx-nh.cx)<70).sort((a,b)=>a.x-b.x);
+    name=cand.map(t=>t.s).join("").replace(/[．.]$/,"");}
+  return m?{year:+m[1],month:+m[2],sm:+m[3],sd:+m[4],em:+m[5],ed:+m[6],name}:{name};
+}
+
+/* ===== チェック ===== */
+function check(rows,meta){
+  const now=new Date();const todayKey=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
+  let y=meta.year,mo=meta.sm||meta.month;
+  if(meta.year&&meta.sm>meta.month)y=meta.year-1; // 締め日が前年にまたがる場合
+  let prev=0;
+  return rows.map(r=>{
+    if(prev&&r.day<prev){mo++;if(mo>12){mo=1;y++}}prev=r.day;
+    const key=y+"-"+pad(mo)+"-"+pad(r.day);
+    const dt=new Date(y,mo-1,r.day);const wd=dt.getDay();
+    const holiday=HOLIDAYS.has(key);const special=wd===0||wd===6||holiday;
+    const kind=r.kind||"";
+    const isOff=OFF_EXACT.includes(kind);
+    const half=/^(午前|午後)/.test(kind);
+    const isWork=!isOff&&(kind.includes("出勤")||half||(!!r.in||!!r.out));
+    const inM=toMin(r.in),outM=toMin(r.out),brk=toMin(r.brk)||0;
+    const issues=[];const add=(lv,short,text)=>issues.push({lv,short,text});
+    const isToday=key===todayKey;
+    let work=null;
+    if(isWork){
+      if(inM==null&&outM==null)add("fix","打刻なし","出勤・退勤の打刻がありません");
+      else if(inM==null)add("fix","出勤なし","出勤の打刻がありません");
+      else if(outM==null){ if(!isToday)add("fix","退勤なし","退勤の打刻がありません"); }
+      else if(outM<=inM)add("fix","時刻が逆","退勤が出勤より前になっています");
+      else{
+        work=outM-inM-brk;
+        if(brk>=RULE.longBreak)add("fix","休憩"+fmt(brk),"休憩が"+fmt(brk)+"と長すぎます。休憩終了の押し忘れかもしれません");
+        else{
+          const need=work>480?60:work>360?45:0;
+          if(need&&brk===0)add("fix","休憩なし","休憩の打刻がありません（"+fmt(work)+"働いた日は"+need+"分以上必要）");
+          else if(need&&brk<need)add("chk","休憩"+fmt(brk),"休憩"+fmt(brk)+"は、"+fmt(work)+"働いた日の目安（"+need+"分）より短いです");
+        }
+        if(/半日/.test(kind)&&work>360)add("chk","区分?","半日の区分ですが"+fmt(work)+"働いています。区分を確認してください");
+        else if(half&&work>360)add("chk","区分?","半休の日ですが"+fmt(work)+"働いています。区分を確認してください");
       }
-      if (!src) return "";
-      return '<iframe src="' + src + '" width="100%" height="' + height +
-        '" frameborder="0" loading="lazy" allow="autoplay; encrypted-media; clipboard-write; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+      if(kind==="出勤"&&special)add("chk","区分?",(holiday?"祝日":"土日")+"ですが、通常の「出勤」区分になっています");
+      if(/土日祝/.test(kind)&&!special)add("chk","区分?","平日ですが「土日祝」の区分になっています");
+    }else if(isOff&&(r.in||r.out)){
+      add("chk","打刻あり","「"+kind+"」の日ですが打刻があります");
     }
+    const lateM=toMin(r.late)||0,earlyM=toMin(r.early)||0;
+    const info=[];if(lateM)info.push("遅刻 "+fmt(lateM));if(earlyM)info.push("早退 "+fmt(earlyM));
+    let st;
+    if(issues.some(i=>i.lv==="fix"))st="fix";
+    else if(issues.length)st="chk";
+    else if(isWork&&isToday&&outM==null)st="today";
+    else if(kind==="公休")st="off";
+    else if(isOff)st="fur";
+    else if(isWork)st="ok";
+    else st="off";
+    return {...r,key,y,mo,wd,holiday,special,isWork,isOff,isToday,work,issues,info,st};
+  });
+}
 
-    // 背景を適用（色 / グラデーション / 画像 を自動判定）
-    function applyBackground(bg) {
-      if (!bg) return;
-      const isImage = /\.(png|jpe?g|webp|gif|avif|svg)(\?.*)?$/i.test(bg) || /^url\(/i.test(bg);
-      if (isImage) {
-        const url = /^url\(/i.test(bg) ? bg : "url('" + bg + "')";
-        document.body.style.backgroundImage = url;
-      } else {
-        // 色・グラデーションはそのまま指定
-        document.body.style.background = bg;
-        document.body.style.backgroundSize = "cover";
-        document.body.style.backgroundPosition = "center";
-        document.body.style.backgroundAttachment = "fixed";
-      }
-    }
+/* ===== 表示 ===== */
+const SHORT=k=>!k?"—":/土日祝/.test(k)?(/半日/.test(k)?"休出半":"休出"):k.replace("夏季休暇","夏休");
+function render(days,meta){
+  $("result").hidden=false;
+  $("who").textContent=meta.name?meta.name+" さん":"チェック結果";
+  $("period").textContent=meta.year?`${meta.year}年${meta.month}月度（${meta.sm}/${meta.sd}〜${meta.em}/${meta.ed}）`:"";
+  const nFix=days.filter(d=>d.st==="fix").length,nChk=days.filter(d=>d.st==="chk").length;
+  $("verdict").innerHTML=`<div class="pill fix"><b>${nFix}</b>日 直す</div><div class="pill chk"><b>${nChk}</b>日 確認する</div><div class="pill ok"><b>${days.filter(d=>d.isWork).length}</b>日 勤務</div>`;
+  $("allok").innerHTML=(nFix+nChk)?"":'<p class="allok">気になる点は見つかりませんでした。</p>';
+  // カレンダー
+  const g=$("grid");g.innerHTML="";
+  for(let i=0;i<days[0].wd;i++){const b=document.createElement("div");b.className="day blank";g.appendChild(b)}
+  let sel=null;
+  days.forEach((d,idx)=>{
+    const b=document.createElement("button");
+    b.className="day s-"+d.st;b.setAttribute("aria-pressed","false");
+    b.setAttribute("aria-label",`${d.mo}月${d.day}日 ${d.kind}`+(d.issues.length?" "+d.issues.map(i=>i.short).join("、"):""));
+    const first=d.issues[0];
+    const showMonth=idx===0||d.day===1;
+    b.innerHTML=`<span class="n">${showMonth?`<small>${d.mo}/</small>`:""}${d.day}</span><span class="k">${esc(SHORT(d.kind))}</span>`
+      +(first?`<span class="iss">${esc(first.short)}${d.issues.length>1?"＋":""}</span>`:(d.st==="today"?'<span class="iss">本日</span>':""))
+      +(d.special?'<span class="hol"></span>':"");
+    b.onclick=()=>{if(sel)sel.setAttribute("aria-pressed","false");sel=b;b.setAttribute("aria-pressed","true");showDetail(d)};
+    g.appendChild(b);
+  });
+  $("detail").innerHTML='<div class="hint">日付をタップすると、打刻の内容と気になる点が表示されます。</div>';
+  // リスト
+  const L=$("list");L.innerHTML="";
+  const groups=[["fix","直す","HRMOSで打刻修正の申請が必要そうな日です。"],["chk","確認する","実態どおりなら直さなくてOK。念のため見ておきたい日です。"]];
+  let any=false;
+  for(const [lv,title,why] of groups){
+    const hit=days.flatMap(d=>d.issues.filter(i=>i.lv===lv).map(i=>({d,i})));
+    if(!hit.length)continue;any=true;
+    let h=`<div class="group"><div class="gh"><span class="tag ${lv}">${title}</span><h3>${hit.length}件</h3></div><div class="why">${why}</div>`;
+    for(const {d,i} of hit)h+=`<div class="item"><span class="d">${d.mo}/${d.day}（${WK[d.wd]}）</span><span>${esc(i.text)}<small>${esc(d.kind)}${d.in?"／"+d.in+"〜"+(d.out||"？"):""}${d.brk&&d.in?"／休憩 "+d.brk:""}</small></span></div>`;
+    L.insertAdjacentHTML("beforeend",h+"</div>");
+  }
+  const infos=days.filter(d=>d.info.length);
+  if(infos.length){any=true;
+    let h=`<div class="group"><div class="gh"><span class="tag info">参考</span><h3>遅刻・早退が付いている日</h3></div><div class="why">帳票に記録されている内容です。実際と違えば修正を。</div>`;
+    for(const d of infos)h+=`<div class="item"><span class="d">${d.mo}/${d.day}（${WK[d.wd]}）</span><span>${d.info.join("、")}<small>${esc(d.kind)}${d.in?"／出勤 "+d.in:""}</small></span></div>`;
+    L.insertAdjacentHTML("beforeend",h+"</div>");
+  }
+  const today=days.find(d=>d.st==="today");
+  if(today){any=true;L.insertAdjacentHTML("beforeend",`<div class="group"><div class="gh"><span class="tag info">今日</span><h3>${today.mo}/${today.day} は退勤後に打刻</h3></div><div class="why">退勤と休憩の打刻がまだなので、今日の分は判定していません。</div></div>`)}
+  if(!any)L.innerHTML='<div class="group"><div class="gh"><span class="tag" style="background:var(--ok)">OK</span><h3>直す・確認する日はありません</h3></div></div>';
+  $("result").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
+}
+function showDetail(d){
+  let h=`<div class="dt">${d.mo}/${d.day}（${WK[d.wd]}）${d.holiday?"祝日 ":""}${esc(d.kind||"区分なし")}</div>`;
+  if(d.in||d.out)h+=`<dl><dt>出勤</dt><dd>${d.in||"—"}</dd><dt>退勤</dt><dd>${d.out||"—"}</dd><dt>休憩</dt><dd>${d.brk||"—"}</dd>${d.work!=null?`<dt>実働</dt><dd>${fmt(d.work)}</dd>`:""}</dl>`;
+  if(d.memo)h+=`<div class="hint" style="margin-top:4px">備考：${esc(d.memo)}</div>`;
+  const col={fix:"var(--fix)",chk:"var(--chk)"};
+  if(d.issues.length)h+="<ul>"+d.issues.map(i=>`<li style="color:${col[i.lv]}">${esc(i.text)}</li>`).join("")+"</ul>";
+  else if(d.st==="today")h+='<div class="hint" style="margin-top:6px">今日の分です。退勤後に打刻すればOK。</div>';
+  else h+=`<div style="margin-top:6px;font-weight:700;color:var(--ok)">問題ありません</div>`;
+  if(d.info.length)h+=`<div class="hint" style="margin-top:4px">${d.info.join("、")}</div>`;
+  $("detail").innerHTML=h;
+}
 
-    // テーマ（デザイン）を適用
-    function applyTheme(t) {
-      t = t || {};
-      const root = document.documentElement;
-      if (t.accent) root.style.setProperty("--accent", t.accent);
-      if (t.buttonRadius != null) root.style.setProperty("--radius", t.buttonRadius + "px");
-      const shapes = { circle: "50%", rounded: "18px", square: "6px" };
-      root.style.setProperty("--avatar-radius", shapes[t.avatarShape] || "50%");
-      document.body.dataset.font = t.font || "sans";
-      document.body.dataset.btn = t.buttonStyle || "card";
-    }
-
-    // 描画
-    applyBackground(CONFIG.background);
-    applyTheme(CONFIG.theme);
-    if (CONFIG.textColor) {
-      document.documentElement.style.setProperty("--page-text", CONFIG.textColor);
-    }
-    if (CONFIG.overlay) {
-      const ov = document.getElementById("overlay");
-      ov.style.background = CONFIG.overlay;
-      ov.style.display = "block";
-    }
-    document.title = CONFIG.name + " | Link in bio";
-    document.getElementById("avatar").src = CONFIG.avatar;
-    document.getElementById("avatar").alt = CONFIG.name;
-    document.getElementById("name").textContent = CONFIG.name;
-    document.getElementById("bio").textContent = CONFIG.bio;
-    // URLを補正：メールアドレスは mailto:、スキームの無いURLは https:// を自動付与
-    function normalizeUrl(raw) {
-      var u = String(raw || "").trim();
-      if (!u) return u;
-      if (/^(https?:|mailto:|tel:|#|\/|\.\/)/i.test(u)) return u; // すでに正しい形
-      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(u)) return "mailto:" + u; // メールアドレス
-      return "https://" + u; // ドメインだけ等
-    }
-    document.getElementById("links").innerHTML = (CONFIG.links || [])
-      .map(function (l) {
-        const url = normalizeUrl(l.url);
-        const isMail = url.startsWith("mailto:");
-        const attrs = isMail ? "" : ' target="_blank" rel="noopener"';
-        return (
-          '<a class="link" href="' + url + '"' + attrs + ">" +
-          iconSvg(l.icon) +
-          "<span>" + l.label + "</span>" +
-          chev +
-          "</a>"
-        );
-      })
-      .join("");
-    document.getElementById("gallery").innerHTML = (CONFIG.gallery || [])
-      .map(function (src) { return '<img src="' + src + '" alt="" loading="lazy" />'; })
-      .join("");
-    document.getElementById("music").innerHTML = musicEmbed(CONFIG.music);
-    document.getElementById("footer").innerHTML =
-      "© " + new Date().getFullYear() + " " + CONFIG.footer;
-  </script>
+/* ===== ファイル入力 ===== */
+async function handle(file){
+  if(!file)return;
+  if(!/\.pdf$/i.test(file.name)&&file.type!=="application/pdf"){status("PDFファイルを選んでください。",true);return}
+  if(!window.pdfjsLib){status("読み取りの準備ができていません。通信環境を確認して、ページを開き直してください。",true);return}
+  status("読み取り中…");$("result").hidden=true;
+  try{
+    const pages=await readPdf(new Uint8Array(await file.arrayBuffer()));
+    const meta=parseMeta(pages);
+    const rows=pages.flatMap(p=>parsePage(p,meta));
+    if(!rows.length||!meta.year){status("HRMOSの「日次勤怠」PDFとして読み取れませんでした。1人分の日次勤怠をPDFで出力したファイルか確認してください。",true);return}
+    const days=check(rows,meta);
+    status("");render(days,meta);
+  }catch(e){console.error(e);status("PDFを読み取れませんでした。ファイルが壊れていないか、パスワード付きでないか確認してください。",true)}
+}
+$("file").addEventListener("change",e=>{handle(e.target.files[0]);e.target.value=""});
+const dz=$("drop");
+["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("over")}));
+["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove("over")}));
+dz.addEventListener("drop",e=>handle(e.dataTransfer.files[0]));
+</script>
 </body>
 </html>
