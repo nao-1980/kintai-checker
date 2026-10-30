@@ -110,6 +110,28 @@ h2{font-size:1.15rem;font-weight:900;margin:34px 0 12px}
 .item small{display:block;color:var(--sub);font-size:.8rem}
 .group{padding-bottom:8px}
 
+.day .lnk{font-size:.56rem;font-weight:700;line-height:1.2;color:var(--fur);margin-top:auto;word-break:keep-all;max-width:100%}
+.day .lnk.out{color:var(--hol)}
+.fsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fsum div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-weight:700}
+.fsum span{display:block;font-size:.75rem;color:var(--sub)}
+.fsum b{font-size:1.5rem;font-weight:900;margin-right:2px}
+.fsum.fix div:nth-child(3) b{color:var(--fix)} .fsum.chk div:nth-child(3) b{color:var(--chk)} .fsum.ok div:nth-child(3) b{color:var(--ok)}
+.fkw{overflow-x:auto;margin-top:12px;border-radius:14px}
+.fk{width:100%;border-collapse:collapse;font-size:.88rem;background:var(--surface);border:1px solid var(--line)}
+.fk th,.fk td{padding:10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.fk th{font-size:.76rem;color:var(--sub);background:var(--bg);font-weight:700}
+.fk tr:last-child td{border-bottom:0}
+.fk tr.carry td{color:var(--sub)}
+.fk small{color:var(--sub);font-size:.76rem}
+.good{color:var(--ok);font-weight:700}.warn{color:var(--chk);font-weight:900}.bad{color:var(--fix);font-weight:900}
+.plan{display:block;margin-top:6px;font-size:.74rem;color:var(--sub)}
+.plan input{display:block;margin-top:2px;font:inherit;font-size:.85rem;padding:5px 6px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);max-width:150px}
+.memo{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.mh h3{margin:0;font-size:1rem;font-weight:900}
+.mh button{font:inherit;font-weight:700;font-size:.85rem;border:0;border-radius:999px;padding:7px 16px;background:var(--ink);color:var(--bg);cursor:pointer}
+.memo textarea{width:100%;font:inherit;font-size:.86rem;line-height:1.6;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--bg);color:var(--ink);resize:vertical}
 .rules{font-size:.86rem;color:var(--sub);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px 16px}
 .rules summary{cursor:pointer;font-weight:700;color:var(--ink);padding:10px 0}
 .rules ul{margin:0 0 12px;padding-left:1.2em}
@@ -152,6 +174,14 @@ footer{margin-top:28px;font-size:.78rem;color:var(--sub)}
       <div class="detail" id="detail"><div class="hint">日付をタップすると、打刻の内容と気になる点が表示されます。</div></div>
     </div>
 
+    <h2>振替休日の管理</h2>
+    <div id="fk"></div>
+    <div class="memo">
+      <div class="mh"><h3>申請用メモ</h3><button type="button" id="copy">コピー</button></div>
+      <textarea id="memo" rows="9" aria-label="申請用メモ"></textarea>
+      <p class="hint">取得予定日を入れるとメモに反映されます。予定日はこの端末にだけ保存されます。</p>
+    </div>
+
     <h2>見つかったこと</h2>
     <div class="todo" id="list"></div>
 
@@ -165,6 +195,8 @@ footer{margin-top:28px;font-size:.78rem;color:var(--sub)}
         <li>退勤が出勤より前になっている日は「直す」</li>
         <li>休みの日に打刻がある日、土日祝なのに通常の出勤区分（またはその逆）、半日区分なのに6時間を超えて働いている日は「確認する」</li>
         <li>今日の日付で退勤がまだの日は、エラーにしません</li>
+        <li>振休は備考の「9/23分」のような日付で休日出勤とひも付けます。休日出勤1日（半日は0.5日）に対して、振休（午前・午後振休は0.5日）が多ければ「直す」、残っていれば「残り」として表示します</li>
+        <li>備考の日付が前月以前なら「繰り越し分」、翌月以降なら「前取り」として扱います</li>
       </ul>
     </details>
   </section>
@@ -174,6 +206,9 @@ footer{margin-top:28px;font-size:.78rem;color:var(--sub)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
 <script>
+document.addEventListener("click",e=>{if(e.target.id!=="copy")return;const t=$("memo");
+  const done=()=>{e.target.textContent="コピーしました";setTimeout(()=>e.target.textContent="コピー",1600)};
+  if(navigator.clipboard)navigator.clipboard.writeText(t.value).then(done,()=>{t.select();document.execCommand("copy");done()});else{t.select();document.execCommand("copy");done()}});
 /* ===== 祝日（2026〜2027） ===== */
 const HOLIDAYS=new Set(["2026-01-01","2026-01-12","2026-02-11","2026-02-23","2026-03-20","2026-04-29","2026-05-03","2026-05-04","2026-05-05","2026-05-06","2026-07-20","2026-08-11","2026-09-21","2026-09-22","2026-09-23","2026-10-12","2026-11-03","2026-11-23",
 "2027-01-01","2027-01-11","2027-02-11","2027-02-23","2027-03-21","2027-03-22","2027-04-29","2027-05-03","2027-05-04","2027-05-05","2027-07-19","2027-08-11","2027-09-20","2027-09-23","2027-10-11","2027-11-03","2027-11-23"]);
@@ -247,7 +282,11 @@ function parseMeta(pages){
   const nh=all.find(t=>t.s==="氏名");
   if(nh){const cand=all.filter(t=>t.y<nh.y-3&&t.y>nh.y-40&&Math.abs(t.cx-nh.cx)<70).sort((a,b)=>a.x-b.x);
     name=cand.map(t=>t.s).join("").replace(/[．.]$/,"");}
-  return m?{year:+m[1],month:+m[2],sm:+m[3],sd:+m[4],em:+m[5],ed:+m[6],name}:{name};
+  let hrRemain=null;
+  const lb=all.find(t=>t.s.includes("振替休日残数"));
+  if(lb){const v=all.filter(t=>Math.abs(t.y-lb.y)<4&&t.x>lb.x+lb.w&&/^\d+(\.\d+)?日?$/.test(t.s)).sort((a,b)=>a.x-b.x)[0];
+    if(v)hrRemain=parseFloat(v.s);}
+  return m?{year:+m[1],month:+m[2],sm:+m[3],sd:+m[4],em:+m[5],ed:+m[6],name,hrRemain}:{name,hrRemain};
 }
 
 /* ===== チェック ===== */
@@ -304,9 +343,107 @@ function check(rows,meta){
   });
 }
 
+/* ===== 振替休日 ===== */
+const md=k=>{const [,m,d]=k.split("-");return (+m)+"/"+(+d)};
+const wdOf=k=>WK[new Date(k).getDay()];
+const nf=n=>(Math.round(n*10)/10).toString();
+function srcKey(memo,base){
+  const m=/(\d{1,2})\/(\d{1,2})[^0-9]*?分/.exec(memo||"");if(!m)return null;
+  const mo=+m[1],d=+m[2];let best=null,bd=1e18;
+  for(const y of [base.y-1,base.y,base.y+1]){const t=new Date(y,mo-1,d);const df=Math.abs(t-new Date(base.y,base.mo-1,base.day));if(df<bd){bd=df;best=y+"-"+pad(mo)+"-"+pad(d)}}
+  return best;
+}
+function furikae(days,meta){
+  const first=days[0].key,last=days[days.length-1].key;
+  const ent={},carryIn=[],advance=[],unlinked=[],badLink=[];
+  for(const d of days){
+    const k=d.kind||"";
+    if(d.isWork&&/土日祝|休日出勤/.test(k)){d.earn=/半日/.test(k)?0.5:1;ent[d.key]={day:d,earn:d.earn,uses:[]};}
+  }
+  for(const d of days){
+    const k=d.kind||"";
+    if(!/振休/.test(k))continue;
+    d.use=/^(午前|午後)/.test(k)?0.5:1;
+    const src=srcKey(d.memo,d);d.src=src;
+    if(!src){unlinked.push(d);d.issues.push({lv:"chk",short:"備考なし",text:"どの休日出勤の振休か、備考に書かれていません（例：9/23分）"});continue}
+    if(ent[src])ent[src].uses.push(d);
+    else if(src<first)carryIn.push(d);
+    else if(src>last)advance.push(d);
+    else{badLink.push(d);d.issues.push({lv:"fix",short:"振替元?",text:"備考の "+md(src)+" は休日出勤の日になっていません"})}
+  }
+  const list=Object.values(ent);
+  const now=new Date();const todayKey=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
+  const ended=todayKey>last;
+  for(const e of list){
+    e.used=e.uses.reduce((a,u)=>a+u.use,0);e.rem=Math.round((e.earn-e.used)*10)/10;
+    if(e.rem<0){e.state="over";for(const u of e.uses)u.issues.push({lv:"fix",short:"振休多い",text:md(e.day.key)+"分の振休が"+nf(e.used)+"日あり、休日出勤（"+nf(e.earn)+"日）より多いです"})}
+    else if(e.rem>0)e.state="left";else e.state="done";
+  }
+  for(const d of days){ if(d.issues.length&&(d.st==="fur"||d.st==="ok")){d.st=d.issues.some(i=>i.lv==="fix")?"fix":"chk"} }
+  const earned=list.reduce((a,e)=>a+e.earn,0);
+  const remain=list.reduce((a,e)=>a+Math.max(e.rem,0),0);
+  return {list,carryIn,advance,unlinked,badLink,earned,remain,ended,last};
+}
+const PLAN_KEY="kintai-furikae-plan";
+const loadPlan=()=>{try{return JSON.parse(localStorage.getItem(PLAN_KEY))||{}}catch(e){return {}}};
+const savePlan=p=>{try{localStorage.setItem(PLAN_KEY,JSON.stringify(p))}catch(e){}};
+function renderFurikae(F,meta,days){
+  const box=$("fk");box.innerHTML="";
+  if(!F.list.length&&!F.carryIn.length&&!F.advance.length&&!F.unlinked.length){box.innerHTML='<p class="hint">この期間に休日出勤・振休はありません。</p>';$("memo").value="";return}
+  const plan=loadPlan();const pk=e=>(meta.name||"")+"|"+e.day.key;
+  const useTxt=u=>md(u.key)+"（"+WK[u.wd]+"）"+(u.use<1?(/^午前/.test(u.kind)?"午前":"午後"):"");
+  const over=F.list.filter(e=>e.state==="over").length;
+  const sumCls=over||F.badLink.length?"fix":F.remain>0||F.unlinked.length?"chk":"ok";
+  let h=`<div class="fsum ${sumCls}"><div><span>休日出勤</span><b>${nf(F.earned)}</b>日</div><div><span>振休済み</span><b>${nf(F.earned-F.remain+F.list.filter(e=>e.rem<0).reduce((a,e)=>a-e.rem,0))}</b>日</div><div><span>残り</span><b>${nf(F.remain)}</b>日</div></div>`;
+  if(meta.hrRemain!=null){const same=Math.abs(meta.hrRemain-F.remain)<0.01;
+    h+=`<p class="hint" style="margin:8px 2px 0">HRMOSの「振替休日残数」：<b>${nf(meta.hrRemain)}日</b> ${same?'<span style="color:var(--ok);font-weight:700">一致しています</span>':'<span style="color:var(--chk);font-weight:700">この月の計算（'+nf(F.remain)+'日）と違います。前月以前の残りや、備考の書き漏れがないか確認を</span>'}</p>`;}
+  h+='<div class="fkw"><table class="fk"><thead><tr><th>休日出勤</th><th>振休</th><th>状態</th></tr></thead><tbody>';
+  for(const e of F.list){
+    const d=e.day;const uses=e.uses.map(useTxt).join("<br>")||"—";
+    let st;
+    if(e.state==="done")st='<span class="good">取得済み</span>';
+    else if(e.state==="over")st=`<span class="bad">${nf(-e.rem)}日 多い</span>`;
+    else st=`<span class="warn">残り ${nf(e.rem)}日</span><br><small>${F.ended?"翌月へ繰り越し":"月内か翌月に取得"}</small>
+      <label class="plan">取得予定日<input type="date" data-k="${esc(pk(e))}" value="${esc(plan[pk(e)]||"")}"></label>`;
+    h+=`<tr><td><b>${md(d.key)}</b>（${WK[d.wd]}${d.holiday?"・祝":""}）${e.earn<1?"<br><small>半日</small>":""}</td><td>${uses}</td><td>${st}</td></tr>`;
+  }
+  for(const u of F.carryIn)h+=`<tr class="carry"><td>${md(u.src)}<br><small>前月以前</small></td><td>${useTxt(u)}</td><td><span class="good">繰り越し分を取得</span></td></tr>`;
+  for(const u of F.advance)h+=`<tr class="carry"><td>${md(u.src)}<br><small>来月の予定</small></td><td>${useTxt(u)}</td><td><span class="good">前取り</span></td></tr>`;
+  for(const u of F.unlinked)h+=`<tr><td>？</td><td>${useTxt(u)}</td><td><span class="warn">備考に振替元なし</span></td></tr>`;
+  for(const u of F.badLink)h+=`<tr><td>${md(u.src)}？</td><td>${useTxt(u)}</td><td><span class="bad">${md(u.src)}は休日出勤ではない</span></td></tr>`;
+  h+='</tbody></table></div>';
+  box.innerHTML=h;
+  box.querySelectorAll("input[type=date]").forEach(i=>i.onchange=()=>{const p=loadPlan();if(i.value)p[i.dataset.k]=i.value;else delete p[i.dataset.k];savePlan(p);writeMemo(F,meta)});
+  writeMemo(F,meta);
+}
+function writeMemo(F,meta){
+  const plan=loadPlan();const pk=e=>(meta.name||"")+"|"+e.day.key;
+  const useTxt=u=>md(u.key)+"("+WK[u.wd]+")"+(u.use<1?(/^午前/.test(u.kind)?"午前":"午後"):"");
+  const L=[];
+  L.push(`【振替休日メモ】${meta.year}年${meta.month}月度${meta.name?"　"+meta.name:""}`);
+  if(F.list.length){L.push("","■ 休日出勤 → 振休");
+    for(const e of F.list){const d=e.day;
+      const head=`・${md(d.key)}(${WK[d.wd]}${d.holiday?"・祝":""})${e.earn<1?" 半日":""}`;
+      const u=e.uses.length?e.uses.map(useTxt).join("・"):"";
+      if(e.state==="done")L.push(`${head} → ${u} 振休 済`);
+      else if(e.state==="over")L.push(`${head} → ${u} ※${nf(-e.rem)}日多い・要確認`);
+      else{const pl=plan[pk(e)];const pd=pl?md(pl)+"("+wdOf(pl)+")":"未定";
+        L.push(`${head} → ${u?u+" 済、":""}残り${nf(e.rem)}日 → ${pd}${pl?" 取得予定":""}${F.ended&&!pl?"（翌月へ繰り越し）":""}`)}
+    }}
+  if(F.carryIn.length){L.push("","■ 前月からの繰り越し分");for(const u of F.carryIn)L.push(`・${md(u.src)}分 → ${useTxt(u)} 振休 済`)}
+  if(F.advance.length){L.push("","■ 来月の休日出勤分を前取り");for(const u of F.advance)L.push(`・${md(u.src)}分 → ${useTxt(u)} 振休`)}
+  if(F.unlinked.length){L.push("","■ 振替元が未記入");for(const u of F.unlinked)L.push(`・${useTxt(u)} 振休 → どの休日出勤の分か備考に記入`)}
+  L.push("",`■ 振休の残り：${nf(F.remain)}日`+(meta.hrRemain!=null?`（HRMOS表示 ${nf(meta.hrRemain)}日）`:""));
+  $("memo").value=L.join("\n");
+}
+
 /* ===== 表示 ===== */
 const SHORT=k=>!k?"—":/土日祝/.test(k)?(/半日/.test(k)?"休出半":"休出"):k.replace("夏季休暇","夏休");
 function render(days,meta){
+  const F=furikae(days,meta);
+  for(const e of F.list){e.day.lnk=e.uses.length?"振→"+e.uses.map(u=>u.day+(u.use<1?"½":"")).join("・"):"";
+    if(e.rem>0)e.day.lnk+=(e.day.lnk?" ":"")+"振休残"+nf(e.rem);if(e.rem<0)e.day.lnk="振休多い";}
+  for(const d of days)if(d.src)d.lnk=md(d.src)+"分";
   $("result").hidden=false;
   $("who").textContent=meta.name?meta.name+" さん":"チェック結果";
   $("period").textContent=meta.year?`${meta.year}年${meta.month}月度（${meta.sm}/${meta.sd}〜${meta.em}/${meta.ed}）`:"";
@@ -325,11 +462,13 @@ function render(days,meta){
     const showMonth=idx===0||d.day===1;
     b.innerHTML=`<span class="n">${showMonth?`<small>${d.mo}/</small>`:""}${d.day}</span><span class="k">${esc(SHORT(d.kind))}</span>`
       +(first?`<span class="iss">${esc(first.short)}${d.issues.length>1?"＋":""}</span>`:(d.st==="today"?'<span class="iss">本日</span>':""))
+      +(d.lnk?`<span class="lnk${d.earn?" out":""}">${esc(d.lnk)}</span>`:"")
       +(d.special?'<span class="hol"></span>':"");
     b.onclick=()=>{if(sel)sel.setAttribute("aria-pressed","false");sel=b;b.setAttribute("aria-pressed","true");showDetail(d)};
     g.appendChild(b);
   });
   $("detail").innerHTML='<div class="hint">日付をタップすると、打刻の内容と気になる点が表示されます。</div>';
+  renderFurikae(F,meta,days);
   // リスト
   const L=$("list");L.innerHTML="";
   const groups=[["fix","直す","HRMOSで打刻修正の申請が必要そうな日です。"],["chk","確認する","実態どおりなら直さなくてOK。念のため見ておきたい日です。"]];
@@ -356,6 +495,7 @@ function showDetail(d){
   let h=`<div class="dt">${d.mo}/${d.day}（${WK[d.wd]}）${d.holiday?"祝日 ":""}${esc(d.kind||"区分なし")}</div>`;
   if(d.in||d.out)h+=`<dl><dt>出勤</dt><dd>${d.in||"—"}</dd><dt>退勤</dt><dd>${d.out||"—"}</dd><dt>休憩</dt><dd>${d.brk||"—"}</dd>${d.work!=null?`<dt>実働</dt><dd>${fmt(d.work)}</dd>`:""}</dl>`;
   if(d.memo)h+=`<div class="hint" style="margin-top:4px">備考：${esc(d.memo)}</div>`;
+  if(d.lnk)h+=`<div class="hint" style="margin-top:4px;font-weight:700;color:${d.earn?"var(--hol)":"var(--fur)"}">${d.earn?"振休："+esc(d.lnk.replace("振→","").replace("振休残","（残り ")+(d.lnk.includes("残")?"日）":"")):esc(d.lnk)+"の振休"}</div>`;
   const col={fix:"var(--fix)",chk:"var(--chk)"};
   if(d.issues.length)h+="<ul>"+d.issues.map(i=>`<li style="color:${col[i.lv]}">${esc(i.text)}</li>`).join("")+"</ul>";
   else if(d.st==="today")h+='<div class="hint" style="margin-top:6px">今日の分です。退勤後に打刻すればOK。</div>';
